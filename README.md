@@ -36,6 +36,11 @@ Tests cover happy paths, every error path, and a 30-thread concurrency test that
 
 ---
 
+## Note on Commit Messages-
+The prompts were huge and are documented in the file 'Prompts.md', the commit messages contain an overview instead of the actual prompt itself.
+
+---
+
 ## API overview
 
 | Method | Path | Description |
@@ -226,3 +231,26 @@ All errors return the same JSON structure so clients can handle them uniformly:
 ```
 
 Validation errors include a `fieldErrors` map instead of a single `message`.
+
+---
+
+## Future improvements
+
+### Idempotency
+Client sends an idempotency key with the booking request — duplicate requests return the same booking instead of creating a new one. Important for retries over unreliable networks.
+
+### Booking retrieval by passenger
+Currently you can get a booking by ID but there's no way to look up all bookings for a passenger name or email.
+
+### Flight management endpoints
+No way to add, update, or delete flights at runtime — everything is seeded at startup.
+
+### Pagination
+`GET /api/flights` and `GET /api/bookings` return everything — would need cursor or page-based pagination for any real dataset.
+
+### Input sanitization
+- Flight number format validation (e.g. must match a pattern like `AI-101`)
+- No booking on already-departed flights
+
+### Observability
+- Structured logging with a correlation/request ID per request so you can trace a booking through logs
