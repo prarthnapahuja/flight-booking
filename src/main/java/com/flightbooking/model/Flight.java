@@ -30,7 +30,11 @@ public class Flight {
 
     /**
      * Thread-safe seat reservation using a CAS loop.
-     * Returns true if reservation succeeded, false if not enough seats are available.
+     *
+     * Pattern: read → guard-check → compareAndSet → retry on contention.
+     * If another thread changes availableSeats between our read and our CAS,
+     * compareAndSet returns false and we loop with a fresh read.
+     * This guarantees availableSeats never goes below zero.
      */
     public boolean tryReserveSeats(int count) {
         while (true) {
@@ -41,12 +45,22 @@ public class Flight {
             if (availableSeats.compareAndSet(current, current - count)) {
                 return true;
             }
-            // Another thread modified availableSeats — retry
+            // Lost the CAS race — another thread modified availableSeats; retry
         }
     }
 
+    /**
+     * Returns reserved seats to the pool after a cancellation.
+     *
+     * addAndGet is a single atomic operation so concurrent cancellations
+     * cannot lose an update. The cap at totalSeats is a defensive guard —
+     * Booking.cancel() already ensures releaseSeats() is only reachable once
+     * per booking via its own CAS, but belt-and-suspenders here costs nothing.
+     */
     public void releaseSeats(int count) {
-        availableSeats.addAndGet(count);
+        availableSeats.updateAndGet(current ->
+                Math.min(current + count, totalSeats)
+        );
     }
 
     public String getFlightNumber() { return flightNumber; }

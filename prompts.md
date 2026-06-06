@@ -22,3 +22,12 @@ Prompt 3-
 
 Add integration tests using @SpringBootTest and MockMvc covering: create booking, overbooking rejection, cancellation, cancellation releasing seats for rebooking, double cancellation, validation errors, unknown flight/booking
 
+Prompt 4-
+
+Review the following areas of the flight booking Spring Boot project for thread safety issues and fix any problems found:
+
+1. The cancel() method on the Booking model — check if the status check and update are atomic
+2. The releaseSeats() method on the Flight model — check if seat release is thread-safe under concurrent cancellations
+3. The reserveSeats() method on the Flight model — verify the CAS loop implementation is correct
+4. The in-memory repositories — check if they use ConcurrentHashMap or regular HashMap, and fix if needed
+
