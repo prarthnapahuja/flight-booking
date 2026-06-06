@@ -24,4 +24,9 @@ public class BookingRepository {
     public List<Booking> findAll() {
         return List.copyOf(bookings.values());
     }
+
+    /** Clears all bookings — intended for test isolation only. */
+    public void clear() {
+        bookings.clear();
+    }
 }

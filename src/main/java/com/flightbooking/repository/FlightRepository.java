@@ -24,4 +24,9 @@ public class FlightRepository {
     public List<Flight> findAll() {
         return List.copyOf(flights.values());
     }
+
+    /** Clears all flights — intended for test isolation only. */
+    public void clear() {
+        flights.clear();
+    }
 }

@@ -15,5 +15,10 @@ Requirements:
 
 
 Prompt 2-
+
 Can you add a swagger endpoint
+
+Prompt 3-
+
+Add integration tests using @SpringBootTest and MockMvc covering: create booking, overbooking rejection, cancellation, cancellation releasing seats for rebooking, double cancellation, validation errors, unknown flight/booking
 
